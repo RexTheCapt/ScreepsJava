@@ -25,3 +25,4 @@ hs_err_pid*
 .jsweet/
 node_modules/
 target/
+Gruntfile.js
