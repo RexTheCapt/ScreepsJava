@@ -147,17 +147,19 @@ public class Main {
             } catch (Exception e) {
                 GameError ge = (GameError) e;
 
+                String nl = "\r\n";
+
                 Array<String> log = creep.memory.log;
                 double offset = 5;
-                StringBuilder msg = new StringBuilder("Last " + offset + " actions:\n");
+                StringBuilder msg = new StringBuilder("Last " + offset + " actions:" + nl);
 
-                for (double i = log.length - 1 - offset; i < log.length; i++) {
-                    msg.append(log.$get(i)).append("\n");
+                for (double i = log.length - offset; i < log.length; i++) {
+                    msg.append(log.$get(i)).append(nl);
                 }
 
-                msg.append("\n");
+                msg.append(nl);
 
-                msg.append("Message:  ").append(ge.message).append("\n").append("Trace:    ").append(ge.stack);
+                msg.append("Message: ").append(ge.message).append(nl).append("Trace: ").append(ge.stack);
 
                 System.out.println(msg);
                 Game.notify(msg.toString());

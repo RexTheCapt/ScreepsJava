@@ -146,7 +146,11 @@ public class Runner {
             log(creep, "getting spawn by id");
             Structure structure = Game.getObjectById(creep.memory.destinationId);
 
-            if (structure.structureType.equals(STRUCTURE_SPAWN)) {
+            //noinspection ConstantConditions
+            if (spawn == null) {
+                log(creep, "id was not an spawn");
+                creep.memory.destinationId = null;
+            } else if (structure.structureType.equals(STRUCTURE_SPAWN)) {
                 spawn = (StructureSpawn) structure;
             } else {
                 log(creep, "id was not an spawn");
@@ -154,6 +158,7 @@ public class Runner {
             }
         }
 
+        //noinspection ConstantConditions
         if (spawn == null) {
             log(creep, "finding spawn by distance");
             spawn = creep.pos.findClosestByPath(FIND_MY_STRUCTURES,
@@ -263,11 +268,10 @@ public class Runner {
                 log(creep, "going for refill instead");
                 creep.memory.refill = true;
                 run(creep);
-                return false;
             } else {
                 log(creep, "upgrade creep not found, resuming normal duties");
-                return false;
             }
+            return false;
         }
 
         double res = creep.transfer(upgradeCreep, RESOURCE_ENERGY);
@@ -373,30 +377,24 @@ public class Runner {
         double minCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY) / 4;
 
         if (creep.memory.destinationId != null) {
-            log(creep, "checking destination id");
+            log(creep, "checking destination id for refill");
             structure = Game.getObjectById(creep.memory.destinationId);
 
-            String structureType = structure.structureType;
-
-            // check if structure is in memory.
-            String[] structureStores = {STRUCTURE_STORAGE, STRUCTURE_CONTAINER, STRUCTURE_LINK};
-            for (String s : structureStores) {
-                if (structureType.equals(s)) {
-                    StructureStorage ss = (StructureStorage) structure;
-
-                    if (ss.store.energy >= minCapacity) {
-                        log(creep, "using destination id for " + structureType);
-                        return structure;
-                    } else {
-                        creep.memory.destinationId = null;
-                    }
-                }
+            if (STRUCTURE_STORAGE.equals(structure.structureType) || STRUCTURE_CONTAINER.equals(structure.structureType) || STRUCTURE_LINK.equals(structure.structureType)) {
+                log(creep, "got " + structure.structureType);
+                return structure;
+            } else {
+                log(creep, "id was not an energy store");
+                creep.memory.destinationId = null;
             }
         }
 
         log(creep, "searching for closest structure");
         structure = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 Helper.findFilter((Structure s) -> {
+                            if (s == null)
+                                return false;
+
                             if (s.structureType == null)
                                 return false;
 
