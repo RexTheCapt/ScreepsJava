@@ -5,13 +5,11 @@ import jsweet.lang.Math;
 import java.util.ArrayList;
 
 public class BodyBuilder {
-    private final int MAX_PARTS_FOR_ROADS = 33;//17 moves(must round up) (Math.ceil(33.0 / 2) = 17)
-    private final int MAX_PARTS_FOR_NO_ROADS = 25;//25 moves
 
-    private int maxEnergy;
+    private final int maxEnergy;
     private int currentCost;
-    private ArrayList<String> body;
-    private boolean roads;
+    private final ArrayList<String> body;
+    private final boolean roads;
 
     public BodyBuilder(int maxEnergy,boolean roads){
         this.maxEnergy = maxEnergy;
@@ -42,16 +40,21 @@ public class BodyBuilder {
     }
 
     public void repeatablyAddParts(String[] sequence){
-        while(addParts(sequence)){
-            //do nothing
+        while(true) {
+            if (!addParts(sequence))
+                break;
         }
     }
 
     public boolean addParts(String[] sequence){
+        //17 moves(must round up) (Math.ceil(33.0 / 2) = 17)
+        int MAX_PARTS_FOR_ROADS = 33;
+        //25 moves
+        int MAX_PARTS_FOR_NO_ROADS = 25;
         if(sequence.length + this.body.size() > (roads ? MAX_PARTS_FOR_ROADS : MAX_PARTS_FOR_NO_ROADS)){
             return false;
         }
-        int movesNeeded = roads ? (int)Math.ceil((sequence.length + this.body.size())/2) : (sequence.length + this.body.size());
+        int movesNeeded = roads ? (int)Math.ceil((sequence.length + this.body.size()) / 2.0) : (sequence.length + this.body.size());
         int seqCost = 0;
         for(String s : sequence){
             seqCost += getPartCost(s);
@@ -67,19 +70,19 @@ public class BodyBuilder {
     }
 
     public String[] getBody(){
-        int movesNeeded = roads ? (int) Math.ceil(this.body.size()/2) + 1 : this.body.size();
-        String[] bodi = new String[this.body.size()+movesNeeded];
+        int movesNeeded = roads ? (int) Math.ceil(this.body.size() / 2.0) + 1 : this.body.size();
+        String[] body = new String[this.body.size()+movesNeeded];
         int z = 0;
-        for(int x = 0; x < bodi.length;x++){
+        for(int x = 0; x < body.length;x++){
             if(x < movesNeeded) {
-                bodi[x] = "move";
+                body[x] = "move";
             }
             else{
-                bodi[x] = this.body.get(z);
+                body[x] = this.body.get(z);
                 z++;
             }
         }
-        return bodi;
+        return body;
     }
 
     public String[] getBodyNoMove() {

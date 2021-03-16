@@ -296,7 +296,7 @@ public class Main {
         }
 
         Mapper<Creep> creeps = new Mapper<>(Game.creeps);
-        for (Creep creep : creeps.getVals()){
+        for (Creep creep : creeps.getValues()){
             if (!room.name.equals(creep.memory.roomSpawnedIn)) continue;
 
             if (creep.memory.role == null)

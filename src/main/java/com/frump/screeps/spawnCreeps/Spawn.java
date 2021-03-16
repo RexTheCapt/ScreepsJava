@@ -22,7 +22,8 @@ import static com.frump.screeps.Main.role_runner;
 import static com.frump.screeps.Main.role_runner_max;
 import static com.frump.screeps.Main.role_upgrade;
 import static com.frump.screeps.Main.role_upgrade_max;
-import static def.screeps.Globals.*;
+import static def.screeps.Globals.CARRY;
+import static def.screeps.Globals.WORK;
 
 public class Spawn {
     public static void upgrader(HashMap<String, Double> roleCount, Room room, Array<CreepSpawnInfo> queue) {
@@ -189,7 +190,7 @@ public class Spawn {
 
             if (BodyBuilder.getTotalCost(csi.body) > room.energyCapacityAvailable)
                 queue.shift();
-*/
+            */
         }
     }
 }

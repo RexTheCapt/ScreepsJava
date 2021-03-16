@@ -37,7 +37,7 @@ public class Miner {
         }
     }
 
-    private static boolean mineSource(Creep creep) throws Exception {
+    private static void mineSource(Creep creep) throws Exception {
         Source source = Game.getObjectById(creep.memory.destinationId);
 
         if (source == null) {
@@ -49,11 +49,9 @@ public class Miner {
 
         if (res == OK) {
             log(creep, "harvested energy");
-            return true;
         } else if (res == ERR_NOT_IN_RANGE) {
             log(creep, "moving to source");
             creep.moveTo(source.pos);
-            return false;
         } else {
             creep.say("C: " + res);
             log(creep, "Miner.mineSource");
@@ -61,14 +59,14 @@ public class Miner {
         }
     }
 
-    private static boolean runLink(Creep creep) throws Exception {
+    private static void runLink(Creep creep) throws Exception {
         log(creep, "looking for link");
         StructureLink structureLink = creep.pos.findClosestByRange(FIND_STRUCTURES,
                 Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_LINK) && s.pos.getRangeTo(creep.pos) <= 1 && ((StructureLink)s).cooldown == 0));
 
         if (structureLink == null) {
             log(creep, "no links to use");
-            return false;
+            return;
         }
 
         StructureLink targetLink = getStoreLink(creep);
@@ -77,11 +75,9 @@ public class Miner {
 
         if (res == OK) {
             log(creep, "transferred energy");
-            return true;
         } else {
             creep.say("C: " + res);
             log(creep, "Miner.runLink");
-            return false;
         }
     }
 

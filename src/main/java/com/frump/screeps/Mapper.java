@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 /**
- * Javascript proterty mapper.
+ * Javascript property mapper.
  * This helps you to iterate over all javascript object fields.
  * Short explanation:
- * - In JavaScript objects and HashMaps basicly are the exact same thing.
+ * - In JavaScript objects and HashMaps basically are the exact same thing.
  *   The JSweet API used to bridge Java and JavaScript doesn't allow you to easily
  *   iterate over all fields of a JavaScript HashMap (=Object).
  *   Using this map you will have an easy way of dealing with these.
@@ -79,7 +79,6 @@ public class Mapper<T> {
      *  will return a String array with the content ["test","test2"]
      * @return A String array containing the object keys
      */
-    @SuppressWarnings("unchecked")
     public String[] getKeys() {
         return Object.keys(object);
     }
@@ -95,22 +94,20 @@ public class Mapper<T> {
      *  will return a typed JavaScript Array [Java Class Array] with the content ["hello",2].
      * @return A typed JavaScript Array with all values in it
      */
-    @SuppressWarnings("unchecked")
     public Array<T> toArray() {
         String[] keys = Object.keys(object);
-        Array<T> ary = new Array<>();
+        Array<T> array = new Array<>();
         for (String key : keys) {
-            ary.push((T)object.$get(key));
+            array.push((T)object.$get(key));
         }
-        return ary;
+        return array;
     }
 
     /**
      * Alias for toArray
      * @return A typed collection with all values in it
      */
-    @SuppressWarnings("unchecked")
-    public Array<T>  getVals() {
+    public Array<T> getValues() {
         return this.toArray();
     }
 
@@ -123,7 +120,6 @@ public class Mapper<T> {
      * @param filterFunc The (lambda) function to filter by. Only true's will lead the element being included.
      * @return The filtered array result [Java Array!]
      */
-    @SuppressWarnings("unchecked")
     public T[] filter(Function<T, Boolean> filterFunc) {
         return toArray().filter((T obj, Double index, T[] arr) -> filterFunc.apply(obj));
     }
