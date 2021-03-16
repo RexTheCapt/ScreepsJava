@@ -2,6 +2,7 @@ package com.frump.screeps.work;
 
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
+import com.frump.screeps.Tmp;
 import def.screeps.Creep;
 import def.screeps.Game;
 import def.screeps.Room;
@@ -392,24 +393,33 @@ public class Runner {
         log(creep, "searching for closest structure");
         structure = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 Helper.findFilter((Structure s) -> {
+
+                            Tmp.t1(creep);
                             if (s == null)
                                 return false;
 
+                            Tmp.t2(creep);
                             if (s.structureType == null)
                                 return false;
 
+                            Tmp.t3(creep);
                             if (s.structureType.equals(STRUCTURE_STORAGE)) {
+                                Tmp.t4(creep);
                                 StructureStorage ss = (StructureStorage) s;
                                 return ss.store.energy >= minCapacity;
                             }
                             if (s.structureType.equals(STRUCTURE_CONTAINER)) {
+                                Tmp.t5(creep);
                                 StructureContainer sc = (StructureContainer) s;
                                 return sc.store.energy >= minCapacity;
                             }
                             if (s.structureType.equals(STRUCTURE_LINK)) {
+                                Tmp.t6(creep);
                                 StructureLink sl = (StructureLink) s;
                                 return sl.store.energy >= minCapacity;
                             }
+
+                            Tmp.t7(creep);
                             return false;
                         }
                 )

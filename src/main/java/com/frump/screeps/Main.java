@@ -66,6 +66,8 @@ public class Main {
 
     private static final Array<Double> rollingAverage = new Array<>();
 
+    private static final int version_number = 1;
+
     public void init(){
         if(Memory.constructionSites == null){
             Memory.$setStatic("constructionSites",new Memory.ConstructionSites());
@@ -151,7 +153,7 @@ public class Main {
 
                 Array<String> log = creep.memory.log;
                 double offset = 5;
-                StringBuilder msg = new StringBuilder("Last " + offset + " actions:" + nl);
+                StringBuilder msg = new StringBuilder("Version: " + version_number + nl + "Last " + offset + " actions:" + nl);
 
                 for (double i = log.length - offset; i < log.length; i++) {
                     msg.append(log.$get(i)).append(nl);
