@@ -86,6 +86,8 @@ public class Main {
             Memory.$setStatic("structures",new Memory.Structures());
         }
 
+        Game.notify("Initialized version " + version_number);
+
         System.out.println("init");
     }
 
