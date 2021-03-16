@@ -44,9 +44,13 @@ public class Runner {
             log(creep, "refilling");
             Structure refillStructure = getRefillStructure(creep);
 
+            Tmp.t9(creep);
             if (handleRefill(creep, refillStructure) && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
+                Tmp.t10(creep);
                 creep.memory.refill = false;
             }
+
+            Tmp.t11(creep);
         } else {
             log(creep, "depositing");
 
@@ -425,6 +429,7 @@ public class Runner {
                 )
         );
 
+        Tmp.t8(creep);
         return structure;
     }
 }

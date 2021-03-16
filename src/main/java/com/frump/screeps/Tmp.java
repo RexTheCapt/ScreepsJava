@@ -32,4 +32,20 @@ public class Tmp {
     public static void t7(Creep creep) {
         log(creep, "tmp 7");
     }
+
+    public static void t8(Creep creep) {
+        log(creep, "tmp 8");
+    }
+
+    public static void t9(Creep creep) {
+        log(creep, "tmp 9");
+    }
+
+    public static void t10(Creep creep) {
+        log(creep, "tmp 10");
+    }
+
+    public static void t11(Creep creep) {
+        log(creep, "tmp 11");
+    }
 }

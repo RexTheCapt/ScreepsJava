@@ -66,7 +66,7 @@ public class Main {
 
     private static final Array<Double> rollingAverage = new Array<>();
 
-    private static final int version_number = 1;
+    private static final int version_number = 2;
 
     public void init(){
         if(Memory.constructionSites == null){
