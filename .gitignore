@@ -27,3 +27,4 @@ node_modules/
 target/
 Gruntfile.js
 package-lock.json
+dist/
