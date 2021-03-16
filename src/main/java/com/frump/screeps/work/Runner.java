@@ -1,6 +1,5 @@
 package com.frump.screeps.work;
 
-import com.frump.screeps.Code;
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
 import def.screeps.Creep;
@@ -28,9 +27,7 @@ public class Runner {
                 creep.suicide();
 
             StructureStorage storage = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                    Helper.findFilter((Structure s) -> {
-                        return s.structureType.equals(STRUCTURE_STORAGE);
-                    }));
+                    Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_STORAGE)));
 
             double transfer = creep.transfer(storage, RESOURCE_ENERGY);
 
@@ -48,7 +45,7 @@ public class Runner {
 
             if (handleRefill(creep, refillStructure) && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
                 creep.memory.refill = false;
-            } else return;
+            }
         } else {
             log(creep, "depositing");
 
@@ -87,9 +84,7 @@ public class Runner {
             return false;
         }
 
-//        double res = creep.transfer(tower, RESOURCE_ENERGY);
-        Code response = Code.getResponse(creep.transfer(tower, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.transfer(tower, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "transferred energy to tower");
@@ -104,7 +99,7 @@ public class Runner {
             creep.moveTo(tower.pos);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.giveTower");
+            throw GameError.newUnhandledCode(creep, res, "Runner.giveTower");
         }
     }
 
@@ -125,8 +120,7 @@ public class Runner {
             return false;
         }
 
-        Code response = Code.getResponse(creep.transfer(extension, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.transfer(extension, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "transferred energy to extension");
@@ -141,7 +135,7 @@ public class Runner {
             creep.moveTo(extension.pos);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.giveExtension");
+            throw GameError.newUnhandledCode(creep, res, "Runner.giveExtension");
         }
     }
 
@@ -179,8 +173,7 @@ public class Runner {
             return false;
         }
 
-        Code response = Code.getResponse(creep.transfer(spawn, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.transfer(spawn, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "transferred energy to spawn");
@@ -195,7 +188,7 @@ public class Runner {
             run(creep);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.giveSpawn");
+            throw GameError.newUnhandledCode(creep, res, "Runner.giveSpawn");
         }
     }
 
@@ -213,15 +206,8 @@ public class Runner {
             return false;
         }
 
-        if (link == null) {
-            log(creep, "no storage link");
-            return false;
-        }
-
         StructureStorage storage = link.pos.findClosestByRange(FIND_STRUCTURES,
-                Helper.findFilter((Structure s) -> {
-                    return s.structureType.equals(STRUCTURE_STORAGE) && s.pos.getRangeTo(link.pos) <= 1;
-                }));
+                Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_STORAGE) && s.pos.getRangeTo(link.pos) <= 1));
 
         if (storage == null) {
             log(creep, "no storage near link");
@@ -240,8 +226,7 @@ public class Runner {
 
         creep.room.memory.storingCreep = creep.name;
 
-        Code response = Code.getResponse(creep.transfer(storage, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.transfer(storage, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "stored energy");
@@ -251,11 +236,10 @@ public class Runner {
         } else if (res == ERR_NOT_ENOUGH_ENERGY) {
             log(creep, "already empty");
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.emptyStoreLink 1");
+            throw GameError.newUnhandledCode(creep, res, "Runner.emptyStoreLink 1");
         }
 
-        response = Code.getResponse(creep.withdraw(link, RESOURCE_ENERGY));
-        res = response.value;
+        res = creep.withdraw(link, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "took energy from link, " + link.store.energy + " left");
@@ -265,7 +249,7 @@ public class Runner {
         } else if (res == ERR_FULL) {
             log(creep, "already full");
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.emptyStoreLink 2");
+            throw GameError.newUnhandledCode(creep, res, "Runner.emptyStoreLink 2");
         }
 
         return true;
@@ -286,8 +270,7 @@ public class Runner {
             }
         }
 
-        Code response = Code.getResponse(creep.transfer(upgradeCreep, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.transfer(upgradeCreep, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "transferred energy to " + upgradeCreep.name);
@@ -302,7 +285,7 @@ public class Runner {
             run(creep);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.giveUpgrade");
+            throw GameError.newUnhandledCode(creep, res, "Runner.giveUpgrade");
         }
     }
 
@@ -327,7 +310,7 @@ public class Runner {
         log(creep, "searching for upgrade creep");
         Creep[] creeps = room.find(FIND_MY_CREEPS,
                 Helper.findFilter((Creep c) -> {
-                            Double energyLimit = c.store.getFreeCapacity(RESOURCE_ENERGY) / 2;
+                            double energyLimit = c.store.getFreeCapacity(RESOURCE_ENERGY) / 2;
                             return c.memory.role.equals(role_upgrade) && creep.store.energy < energyLimit;
                         }
                 )
@@ -345,8 +328,7 @@ public class Runner {
     }
 
     private static boolean handleRefill(Creep creep, Structure refillStructure) throws Exception {
-        Code response = Code.getResponse(creep.withdraw(refillStructure, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.withdraw(refillStructure, RESOURCE_ENERGY);
 
         if (res == OK) {
             if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
@@ -382,7 +364,7 @@ public class Runner {
         } else if (res == ERR_INVALID_ARGS) {
             throw GameError.newInvalidArgs(creep);
         } else {
-            throw GameError.newUnhandledCode(creep, response, "Runner.handleRefill");
+            throw GameError.newUnhandledCode(creep, res, "Runner.handleRefill");
         }
     }
 

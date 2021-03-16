@@ -47,11 +47,9 @@ import jsweet.lang.Object;
  */
 @Ambient
 public class CreepMemory extends Object {
-
     public String role;
     public String roomSpawnedIn;
     public Boolean refill;
-    public Double moveCount;
     public String destinationId;
     public Boolean upgradingController;
     public Array<String> log;

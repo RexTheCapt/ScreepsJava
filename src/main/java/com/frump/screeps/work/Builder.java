@@ -1,7 +1,5 @@
 package com.frump.screeps.work;
 
-import com.frump.screeps.Code;
-import com.frump.screeps.DeathStroll;
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
 import def.screeps.ConstructionSite;
@@ -10,7 +8,6 @@ import def.screeps.Flag;
 import def.screeps.Game;
 import def.screeps.Structure;
 import def.screeps.StructureContainer;
-import def.screeps.StructureSpawn;
 
 import static com.frump.screeps.CustomLogger.log;
 import static def.screeps.Globals.*;
@@ -28,8 +25,7 @@ public class Builder {
                 flag.remove();
             } else {
                 log(creep, "dismantling " + structures[0].structureType);
-                Code response = Code.getResponse(creep.dismantle(structures[0]));
-                double res = response.value;
+                double res = creep.dismantle(structures[0]);
 
                 if (res == OK) {
                     log(creep, structures[0].hits + " hits left");
@@ -39,7 +35,7 @@ public class Builder {
                 } else {
                     log(creep, "Builder.buildSite");
                     creep.say("C: " + res);
-                    throw GameError.newUnhandledCode(creep, response, "Builder.run");
+                    throw GameError.newUnhandledCode(creep, res, "Builder.run");
                 }
             }
 

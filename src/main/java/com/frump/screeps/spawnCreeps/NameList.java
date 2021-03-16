@@ -1,6 +1,5 @@
 package com.frump.screeps.spawnCreeps;
 
-import def.screeps.Game;
 import def.screeps.Memory;
 
 public class NameList {

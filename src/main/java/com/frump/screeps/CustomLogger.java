@@ -50,8 +50,4 @@ public class CustomLogger {
     public static void log(Room room, String text) {
         System.out.println("R-" + room.name + " : " + text);
     }
-
-    public static void logCode(Creep creep, double response, String location) {
-        log(creep, "unhandled code " + response + " in " + location);
-    }
 }

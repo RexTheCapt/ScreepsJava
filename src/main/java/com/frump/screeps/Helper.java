@@ -2,8 +2,6 @@ package com.frump.screeps;
 
 import def.screeps.Creep;
 import def.screeps.Opts;
-import def.screeps.OwnedStructure;
-import def.screeps.Structure;
 
 import java.util.function.Function;
 
@@ -47,7 +45,7 @@ public class Helper {
     }
 
     public static Opts findFilterHurtCreep() {
-        return findFilter((Creep c) -> {return c.hits < c.hitsMax;});
+        return findFilter((Creep c) -> c.hits < c.hitsMax);
     }
     
 }

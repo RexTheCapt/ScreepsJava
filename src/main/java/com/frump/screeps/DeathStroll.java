@@ -8,28 +8,19 @@ import def.screeps.StructureSpawn;
 
 import static com.frump.screeps.CustomLogger.log;
 import static com.frump.screeps.Main.enable_death_stroll;
-import static com.frump.screeps.Main.role_temp;
 import static def.screeps.Globals.*;
 
 public class DeathStroll {
     public static boolean run(Creep creep) throws Exception {
-        switch (creep.memory.role) {
-            case role_temp:
-                return false;
-        }
-
         if (!enable_death_stroll)
             return false;
 
         log(creep, "im dying");
         StructureSpawn spawn = null;
 
-        if (creep.ticksToLive < 100)
-            creep.memory.renew = true;
-
         if (creep.memory.destinationId != null) {
             log(creep, "getting spawn by id");
-            spawn = (StructureSpawn) Game.getObjectById(creep.memory.destinationId);
+            spawn = Game.getObjectById(creep.memory.destinationId);
 
             if (spawn == null)
                 log(creep, "failed");
@@ -53,8 +44,7 @@ public class DeathStroll {
 
         creep.memory.destinationId = creep.id;
 
-        Code response = Code.getResponse(spawn.renewCreep(creep));
-        double res = response.value;
+        double res = spawn.renewCreep(creep);
 
         if (res == OK) {
             log(creep, "lifespan elongated");
@@ -91,6 +81,6 @@ public class DeathStroll {
         } else if (res == ERR_RCL_NOT_ENOUGH) {
             throw GameError.newError(creep, "RCL is not high enough");
         } else
-            throw GameError.newUnhandledCode(creep, response, "DeathStroll.run");
+            throw GameError.newUnhandledCode(creep, res, "DeathStroll.run");
     }
 }

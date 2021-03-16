@@ -20,8 +20,6 @@ import static com.frump.screeps.Main.role_repair;
 import static com.frump.screeps.Main.role_repair_max;
 import static com.frump.screeps.Main.role_runner;
 import static com.frump.screeps.Main.role_runner_max;
-import static com.frump.screeps.Main.role_temp;
-import static com.frump.screeps.Main.role_temp_max;
 import static com.frump.screeps.Main.role_upgrade;
 import static com.frump.screeps.Main.role_upgrade_max;
 import static def.screeps.Globals.*;
@@ -35,7 +33,7 @@ public class Spawn {
             csi.role = role_upgrade;
             csi.roomName = room.name;
 //            csi.name = csi.role + "-" + (Memory.creepIndex) + "-" + csi.roomName;
-            csi.name = "Oppgraderar " + (NameList.GetName());
+            csi.name = csi.role + " " + (NameList.GetName());
 
             BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
             Boolean canCarry = bb.addParts(new String[]{CARRY});
@@ -59,7 +57,7 @@ public class Spawn {
             csi.role = role_runner;
             csi.roomName = room.name;
 //            csi.name = csi.role + "-" + (Memory.creepIndex) + "-" + csi.roomName;
-            csi.name = "Løpar " + (NameList.GetName());
+            csi.name = csi.role + " " + (NameList.GetName());
 
             BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
             boolean canCarry = bb.addParts(new String[]{CARRY});
@@ -81,7 +79,7 @@ public class Spawn {
             csi.role = role_miner;
             csi.roomName = room.name;
 //            csi.name = csi.role + "-" + (Memory.creepIndex) + "-" + csi.roomName;
-            csi.name = "Gravar " + (NameList.GetName());
+            csi.name = csi.role + " " + (NameList.GetName());
 
             BodyBuilder bb;
             boolean canCarry;
@@ -114,7 +112,7 @@ public class Spawn {
             csi.role = role_builder;
             csi.roomName = room.name;
 //            csi.name = csi.role + "-" + (Memory.creepIndex) + "-" + csi.roomName;
-            csi.name = "Byggar " + (NameList.GetName());
+            csi.name = csi.role + " " + (NameList.GetName());
 
             BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
             Boolean canCarry = bb.addParts(new String[]{CARRY});
@@ -137,7 +135,7 @@ public class Spawn {
             csi.role = role_repair;
             csi.roomName = room.name;
 //            csi.name = csi.role + "-" + (Memory.creepIndex) + "-" + csi.roomName;
-            csi.name = "Repratør " + (NameList.GetName());
+            csi.name = csi.role + " " + (NameList.GetName());
 
             BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
             Boolean canCarry = bb.addParts(new String[]{CARRY});
@@ -149,25 +147,6 @@ public class Spawn {
                 queue.push(csi);
                 Memory.creepIndex++;
             }
-        }
-    }
-
-    public static void temper(HashMap<String, Double> roleCount, Room room, Array<CreepSpawnInfo> queue) {
-        if (roleCount.get(role_temp) == null || roleCount.get(role_temp) < role_temp_max)
-        {
-            //noinspection ConstantConditions
-            CreepSpawnInfo csi = (CreepSpawnInfo) new jsweet.lang.Object();
-            csi.role = role_temp;
-            csi.roomName = room.name;
-//            csi.name = csi.role + "-" + (Memory.creepIndex) + "-" + csi.roomName;
-            csi.name = "Ubrukelig " + (NameList.GetName());
-
-            BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
-            bb.addParts(new String[]{ MOVE });
-
-            csi.body = bb.getBody();
-            queue.push(csi);
-            Memory.creepIndex++;
         }
     }
 
@@ -201,7 +180,7 @@ public class Spawn {
             ops.memory.$set("roomSpawnedIn", room.name);
             ops.memory.$set("role", csi.role);
 
-            double ret = ss.spawnCreep(csi.body, csi.name, ops);
+            ss.spawnCreep(csi.body, csi.name, ops);
 
             // TODO: Keep an eye on the spawn queue and judge if this code is actually needed
             /*

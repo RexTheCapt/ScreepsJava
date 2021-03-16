@@ -128,10 +128,8 @@ public class Repair {
             container = creep.pos.findClosestByPath(
                     FIND_STRUCTURES,
                     Helper.findFilter((Structure s) ->
-                            {
-                                return s.structureType.equals(STRUCTURE_CONTAINER) &&
-                                        ((StructureContainer) s).store.energy >= creep.store.getFreeCapacity(RESOURCE_ENERGY);
-                            }
+                            s.structureType.equals(STRUCTURE_CONTAINER) &&
+                                    ((StructureContainer) s).store.energy >= creep.store.getFreeCapacity(RESOURCE_ENERGY)
                     )
             );
 

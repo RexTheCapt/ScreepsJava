@@ -1,6 +1,5 @@
 package com.frump.screeps.work;
 
-import com.frump.screeps.Code;
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
 import com.frump.screeps.memoryDef.SourceInfo;
@@ -46,8 +45,7 @@ public class Miner {
             throw GameError.newError(creep, "source not found");
         }
 
-        Code response = Code.getResponse(creep.harvest(source));
-        double res = response.value;
+        double res = creep.harvest(source);
 
         if (res == OK) {
             log(creep, "harvested energy");
@@ -59,16 +57,14 @@ public class Miner {
         } else {
             creep.say("C: " + res);
             log(creep, "Miner.mineSource");
-            throw GameError.newUnhandledCode(creep, response, "Miner.mineSource");
+            throw GameError.newUnhandledCode(creep, res, "Miner.mineSource");
         }
     }
 
     private static boolean runLink(Creep creep) throws Exception {
         log(creep, "looking for link");
         StructureLink structureLink = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                Helper.findFilter((Structure s) -> {
-                    return s.structureType.equals(STRUCTURE_LINK) && s.pos.getRangeTo(creep.pos) <= 1 && ((StructureLink)s).cooldown == 0;
-                }));
+                Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_LINK) && s.pos.getRangeTo(creep.pos) <= 1 && ((StructureLink)s).cooldown == 0));
 
         if (structureLink == null) {
             log(creep, "no links to use");
@@ -76,11 +72,6 @@ public class Miner {
         }
 
         StructureLink targetLink = getStoreLink(creep);
-
-        if (targetLink == null) {
-            log(creep, "target link is invalid");
-            return false;
-        }
 
         double res = structureLink.transferEnergy(targetLink);
 
@@ -104,9 +95,7 @@ public class Miner {
             if (link != null) {
                 log(creep, "link found, checking storage");
                 StructureStorage storage = link.pos.findClosestByRange(FIND_STRUCTURES,
-                        Helper.findFilter((Structure s) -> {
-                            return s.structureType.equals(STRUCTURE_STORAGE) && s.pos.getRangeTo(link.pos) <= 1;
-                        }));
+                        Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_STORAGE) && s.pos.getRangeTo(link.pos) <= 1));
 
                 if (storage == null) {
                     log(creep, "no storage");
@@ -122,18 +111,14 @@ public class Miner {
         }
 
         StructureStorage[] storages = creep.room.find(FIND_STRUCTURES,
-                Helper.findFilter((Structure s) -> {
-                    return s.structureType.equals(STRUCTURE_STORAGE);
-                }));
+                Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_STORAGE)));
 
         if (storages.length == 1) {
             log(creep, "storage found");
             StructureStorage storage = storages[0];
             StructureLink link = storage.pos.findClosestByRange(FIND_STRUCTURES,
-                    Helper.findFilter((Structure s) -> {
-                        return s.structureType.equals(STRUCTURE_LINK) &&
-                                s.pos.getRangeTo(storage.pos) <= 1;
-                    }));
+                    Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_LINK) &&
+                            s.pos.getRangeTo(storage.pos) <= 1));
 
             creep.room.memory.storageLink = link.id;
 
@@ -170,8 +155,7 @@ public class Miner {
             return false;
         }
 
-        Code response = Code.getResponse(creep.transfer(structure, RESOURCE_ENERGY));
-        double res = response.value;
+        double res = creep.transfer(structure, RESOURCE_ENERGY);
 
         if (res == OK) {
             log(creep, "transferred energy to " + structure.structureType);
@@ -179,23 +163,19 @@ public class Miner {
         } else {
             creep.say("C: " + res);
             log(creep, "Miner.depositEnergy");
-            throw GameError.newUnhandledCode(creep, response, "Miner.depositEnergy");
+            throw GameError.newUnhandledCode(creep, res, "Miner.depositEnergy");
         }
     }
 
     private static boolean buildFixCloseBy(Creep creep) throws Exception {
         log(creep, "looking for construction sites");
         ConstructionSite constructionSite = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES,
-                Helper.findFilter((ConstructionSite cs) -> {
-                    return cs.pos.getRangeTo(creep.pos) <= 1;
-                }));
+                Helper.findFilter((ConstructionSite cs) -> cs.pos.getRangeTo(creep.pos) <= 1));
 
         if (constructionSite == null) {
             log(creep, "looking for repairs");
             Structure structure = creep.pos.findClosestByRange(FIND_STRUCTURES,
-                    Helper.findFilter((Structure s) -> {
-                        return s.hits != s.hitsMax && creep.pos.getRangeTo(s.pos) <= 1;
-                    }));
+                    Helper.findFilter((Structure s) -> s.hits != s.hitsMax && creep.pos.getRangeTo(s.pos) <= 1));
 
             if (structure == null) {
                 log(creep, "no repairs found");
@@ -203,8 +183,7 @@ public class Miner {
             } else {
                 log(creep, "repairing " + structure.structureType);
 
-                Code response = Code.getResponse(creep.repair(structure));
-                double res = response.value;
+                double res = creep.repair(structure);
 
                 if (res == OK) {
                     return true;
@@ -214,21 +193,20 @@ public class Miner {
                 } else {
                     creep.say("C: " + res);
                     log(creep, "Miner.buildFixCloseBy");
-                    throw GameError.newUnhandledCode(creep, response, "Miner.buildFixCloseBy");
+                    throw GameError.newUnhandledCode(creep, res, "Miner.buildFixCloseBy");
                 }
             }
         } else {
             log(creep, "building");
 
-            Code response = Code.getResponse(creep.build(constructionSite));
-            double res = response.value;
+            double res = creep.build(constructionSite);
 
             if (res == OK) {
                 return true;
             } else {
                 creep.say("C: " + res);
                 log(creep, "Miner.buildFixCloseBy");
-                throw GameError.newUnhandledCode(creep, response, "Miner.buildFixCloseby");
+                throw GameError.newUnhandledCode(creep, res, "Miner.buildFixCloseBy");
             }
         }
     }

@@ -1,8 +1,6 @@
 package com.frump.screeps;
 
-import com.frump.screeps.memoryDef.RoomMemory;
 import def.screeps.Creep;
-import def.screeps.Game;
 import def.screeps.Room;
 import def.screeps.Structure;
 import def.screeps.StructureRampart;
@@ -12,23 +10,22 @@ import def.screeps.StructureWall;
 import static com.frump.screeps.CustomLogger.log;
 import static com.frump.screeps.Main.minWallHealth;
 import static def.screeps.Globals.*;
-import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 public class TowerControl {
-    public static void run(Room room, RoomMemory roomMemory) {
+    public static void run(Room room) {
         StructureTower[] towers = getTowersInRoom(room);
 
         Creep[] hostiles = getHostiles(room);
 
         if(hostiles.length > 0) {
-            for (int x = 0; x < towers.length; x++) {
-                towers[x].attack(hostiles[0]);
+            for (StructureTower tower : towers) {
+                tower.attack(hostiles[0]);
             }
         } else {
-            for (int i = 0; i < towers.length; i++) {
-                if (towers[i].store.energy >= 800) {
-                    log(towers[i], "no enemy found, repairing");
-                    repairStructure(towers[i]);
+            for (StructureTower tower : towers) {
+                if (tower.store.energy >= 800) {
+                    log(tower, "no enemy found, repairing");
+                    repairStructure(tower);
                 }
             }
         }
@@ -47,7 +44,7 @@ public class TowerControl {
         if (res == OK) {
             log(tower, "repaired structure, hits remaining: " + (structure.hitsMax - structure.hits));
         } else {
-            log(tower, res, "TownerControl.repairStructure");
+            log(tower, res, "TowerControl.repairStructure");
         }
     }
 
@@ -88,9 +85,7 @@ public class TowerControl {
         return room.find(
                 FIND_MY_STRUCTURES,
                 Helper.findFilter((Structure s) ->
-                        {
-                            return s.structureType.equals(STRUCTURE_TOWER);
-                        }
+                        s.structureType.equals(STRUCTURE_TOWER)
                 )
         );
     }

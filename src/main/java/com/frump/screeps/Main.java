@@ -9,7 +9,6 @@ import com.frump.screeps.work.Miner;
 import com.frump.screeps.work.Builder;
 import com.frump.screeps.work.Repair;
 import com.frump.screeps.work.Runner;
-import com.frump.screeps.work.Temp;
 import com.frump.screeps.work.Upgrade;
 import def.screeps.Creep;
 import def.screeps.Game;
@@ -37,33 +36,29 @@ import static jsweet.util.Globals.$export;
 public class Main {
     private static Main instance;
     public static final String role_miner = "miner";
-    public static       double role_miner_max = 2;
+    public static final double role_miner_max = 2;
     public static final boolean role_miner_enabled = true;
 
     public static final String role_runner = "runner";
-    public static       double role_runner_max = 3;
+    public static final double role_runner_max = 3;
     public static final boolean role_runner_enabled = true;
 
     public static final String role_upgrade = "upgrader";
-    public static       double role_upgrade_max = 2;
+    public static final double role_upgrade_max = 2;
     public static final boolean role_upgrade_enabled = true;
 
     public static final String role_builder = "builder";
-    public static       double role_builder_max = 2;
+    public static final double role_builder_max = 2;
     public static final boolean role_builder_enabled = true;
 
     public static final String role_repair = "repairer";
-    public static       double role_repair_max = 1;
+    public static final double role_repair_max = 1;
     public static final boolean role_repair_enabled = true;
-
-    public static final String role_temp = "temper";
-    public static       double role_temp_max = 1;
-    public static final boolean role_temp_enabled = true;
 
     public static final boolean enable_death_stroll = false;
 
     public static final boolean spawn_only_when_max_energy = false;
-    public static       double minWallHealth = 21000;
+    public static final double minWallHealth = 21000;
 
     public static final String[] allies = { "SirFrump"};
     @SuppressWarnings("SpellCheckingInspection")
@@ -87,8 +82,6 @@ public class Main {
         if(Memory.structures == null){
             Memory.$setStatic("structures",new Memory.Structures());
         }
-
-        Code.init();
 
         System.out.println("init");
     }
@@ -127,16 +120,14 @@ public class Main {
                     }
 
                     StructureRampart[] ramparts = room.find(FIND_STRUCTURES,
-                            Helper.findFilter((Structure s) -> {
-                                return s.structureType.equals(STRUCTURE_RAMPART);
-                            }));
+                            Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_RAMPART)));
 
                     for (StructureRampart r : ramparts)
                         r.setPublic(TowerControl.getHostiles(room).length == 0);
 
                     RoomScanner.run(room, rm);
-                    TowerControl.run(room, rm);
-                    spawnCreeps(room, rm);
+                    TowerControl.run(room);
+                    spawnCreeps(room);
                 }
             }
         }
@@ -247,16 +238,13 @@ public class Main {
             case role_repair:
                 Repair.run(creep);
                 break;
-            case role_temp:
-                Temp.run(creep);
-                break;
             default:
                 CustomLogger.log(creep, null, "No task for role");
                 break;
         }
     }
 
-    private void spawnCreeps(Room room, RoomMemory memory) {
+    private void spawnCreeps(Room room) {
         // Spawn only when max energy toggle
         if (spawn_only_when_max_energy)
             if (room.energyAvailable != room.energyCapacityAvailable)
@@ -283,9 +271,6 @@ public class Main {
 
             if (role_repair_enabled)
                 Spawn.repair(roleCount, room, queue);
-
-            if (role_temp_enabled)
-                Spawn.temper(roleCount, room, queue);
         }
 
         Spawn.handleQueue(spawns, queue, room);
@@ -316,15 +301,10 @@ public class Main {
 
             if (creep.memory.role == null)
                 creep.suicide();
+            else if (roleCount.containsKey(creep.memory.role))
+                roleCount.put(creep.memory.role, roleCount.get(creep.memory.role) + 1);
             else
-                if (roleCount.containsKey(creep.memory.role))
-                    if (creep.memory.role.equals(role_temp)) {
-                      if (creep.ticksToLive > 200)
-                          roleCount.put(creep.memory.role, roleCount.get(creep.memory.role) + 1);
-                    } else
-                        roleCount.put(creep.memory.role, roleCount.get(creep.memory.role) + 1);
-                else
-                    roleCount.put(creep.memory.role, 1.0);
+                roleCount.put(creep.memory.role, 1.0);
         }
 
         return roleCount;

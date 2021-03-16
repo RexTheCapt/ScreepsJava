@@ -1,6 +1,5 @@
 package com.frump.screeps.memoryDef;
 
-import def.screeps.Owner;
 import jsweet.lang.Ambient;
 import jsweet.lang.Object;
 

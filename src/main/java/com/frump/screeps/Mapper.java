@@ -3,7 +3,6 @@ package com.frump.screeps;
 import jsweet.lang.Array;
 import jsweet.lang.Object;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.function.Function;
 

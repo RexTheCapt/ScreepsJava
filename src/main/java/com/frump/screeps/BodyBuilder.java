@@ -5,15 +5,13 @@ import jsweet.lang.Math;
 import java.util.ArrayList;
 
 public class BodyBuilder {
-    private int MAX_PARTS_FOR_ROADS = 33;//17 moves(must round up) (Math.ceil(33.0 / 2) = 17)
-    private int MAX_PARTS_FOR_NO_ROADS = 25;//25 moves
+    private final int MAX_PARTS_FOR_ROADS = 33;//17 moves(must round up) (Math.ceil(33.0 / 2) = 17)
+    private final int MAX_PARTS_FOR_NO_ROADS = 25;//25 moves
 
     private int maxEnergy;
     private int currentCost;
     private ArrayList<String> body;
     private boolean roads;
-
-    private BodyBuilder(){}//NO!
 
     public BodyBuilder(int maxEnergy,boolean roads){
         this.maxEnergy = maxEnergy;
