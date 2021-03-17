@@ -67,7 +67,7 @@ public class Main {
     private static final Array<Double> rollingAverage = new Array<>();
 
     // TODO: Get this number to automatically increment
-    private static final int version_number = 3;
+    private static final int version_number = 4;
 
     public void init(){
         if(Memory.constructionSites == null){

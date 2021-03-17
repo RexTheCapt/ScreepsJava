@@ -337,42 +337,61 @@ public class Runner {
     }
 
     private static boolean handleRefill(Creep creep, Structure refillStructure) throws Exception {
+        Tmp.t12(creep);
         double res = creep.withdraw(refillStructure, RESOURCE_ENERGY);
 
+        Tmp.t13(creep);
         if (res == OK) {
+            Tmp.t14(creep);
             if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                Tmp.t15(creep);
                 log(creep, "space left to fill: " + creep.store.getFreeCapacity(RESOURCE_ENERGY));
                 return false;
             } else {
+                Tmp.t16(creep);
                 log(creep, "refilled to full capacity");
                 return true;
             }
         } else if (res == ERR_NOT_OWNER) {
+            Tmp.t17(creep);
             log(creep, "This structure is not mine!");
+            Tmp.t18(creep);
             creep.memory.destinationId = null;
+            Tmp.t19(creep);
             throw GameError.newError(creep, "not my structure!");
         } else if (res == ERR_BUSY) {
+            Tmp.t20(creep);
             log(creep, "still spawning");
+            Tmp.t21(creep);
             return false;
         } else if (res == ERR_NOT_ENOUGH_RESOURCES) {
+            Tmp.t22(creep);
             log(creep, "going for refill");
+            Tmp.t23(creep);
             creep.memory.refill = true;
+            Tmp.t24(creep);
             run(creep);
+            Tmp.t25(creep);
             return false;
         } else if (res == ERR_INVALID_TARGET) {
+            Tmp.t26(creep);
             log(creep, refillStructure.structureType + " does not have energy in it");
             creep.memory.destinationId = null;
             return false;
         } else if (res == ERR_FULL) {
+            Tmp.t27(creep);
             log(creep, "storage is full, resuming work");
             return true;
         } else if (res == ERR_NOT_IN_RANGE) {
+            Tmp.t28(creep);
             log(creep, "moving to refill location");
             creep.moveTo(refillStructure.pos);
             return false;
         } else if (res == ERR_INVALID_ARGS) {
+            Tmp.t29(creep);
             throw GameError.newInvalidArgs(creep);
         } else {
+            Tmp.t30(creep);
             throw GameError.newUnhandledCode(creep, res, "Runner.handleRefill");
         }
     }
