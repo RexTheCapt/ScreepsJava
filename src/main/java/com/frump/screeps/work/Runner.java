@@ -2,7 +2,6 @@ package com.frump.screeps.work;
 
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
-import com.frump.screeps.Tmp;
 import def.screeps.Creep;
 import def.screeps.Game;
 import def.screeps.Room;
@@ -44,13 +43,9 @@ public class Runner {
             log(creep, "refilling");
             Structure refillStructure = getRefillStructure(creep);
 
-            Tmp.t9(creep);
             if (handleRefill(creep, refillStructure) && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
-                Tmp.t10(creep);
                 creep.memory.refill = false;
             }
-
-            Tmp.t11(creep);
         } else {
             log(creep, "depositing");
 
@@ -337,61 +332,42 @@ public class Runner {
     }
 
     private static boolean handleRefill(Creep creep, Structure refillStructure) throws Exception {
-        Tmp.t12(creep);
         double res = creep.withdraw(refillStructure, RESOURCE_ENERGY);
 
-        Tmp.t13(creep);
         if (res == OK) {
-            Tmp.t14(creep);
             if (creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
-                Tmp.t15(creep);
                 log(creep, "space left to fill: " + creep.store.getFreeCapacity(RESOURCE_ENERGY));
                 return false;
             } else {
-                Tmp.t16(creep);
                 log(creep, "refilled to full capacity");
                 return true;
             }
         } else if (res == ERR_NOT_OWNER) {
-            Tmp.t17(creep);
             log(creep, "This structure is not mine!");
-            Tmp.t18(creep);
             creep.memory.destinationId = null;
-            Tmp.t19(creep);
             throw GameError.newError(creep, "not my structure!");
         } else if (res == ERR_BUSY) {
-            Tmp.t20(creep);
             log(creep, "still spawning");
-            Tmp.t21(creep);
             return false;
         } else if (res == ERR_NOT_ENOUGH_RESOURCES) {
-            Tmp.t22(creep);
             log(creep, "going for refill");
-            Tmp.t23(creep);
             creep.memory.refill = true;
-            Tmp.t24(creep);
             run(creep);
-            Tmp.t25(creep);
             return false;
         } else if (res == ERR_INVALID_TARGET) {
-            Tmp.t26(creep);
-            log(creep, refillStructure.structureType + " does not have energy in it");
+            log(creep, "invalid target");
             creep.memory.destinationId = null;
             return false;
         } else if (res == ERR_FULL) {
-            Tmp.t27(creep);
             log(creep, "storage is full, resuming work");
             return true;
         } else if (res == ERR_NOT_IN_RANGE) {
-            Tmp.t28(creep);
             log(creep, "moving to refill location");
             creep.moveTo(refillStructure.pos);
             return false;
         } else if (res == ERR_INVALID_ARGS) {
-            Tmp.t29(creep);
             throw GameError.newInvalidArgs(creep);
         } else {
-            Tmp.t30(creep);
             throw GameError.newUnhandledCode(creep, res, "Runner.handleRefill");
         }
     }
@@ -416,39 +392,29 @@ public class Runner {
         log(creep, "searching for closest structure");
         structure = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 Helper.findFilter((Structure s) -> {
-
-                            Tmp.t1(creep);
                             if (s == null)
                                 return false;
-
-                            Tmp.t2(creep);
                             if (s.structureType == null)
                                 return false;
 
-                            Tmp.t3(creep);
                             if (s.structureType.equals(STRUCTURE_STORAGE)) {
-                                Tmp.t4(creep);
                                 StructureStorage ss = (StructureStorage) s;
                                 return ss.store.energy >= minCapacity;
                             }
                             if (s.structureType.equals(STRUCTURE_CONTAINER)) {
-                                Tmp.t5(creep);
                                 StructureContainer sc = (StructureContainer) s;
                                 return sc.store.energy >= minCapacity;
                             }
                             if (s.structureType.equals(STRUCTURE_LINK)) {
-                                Tmp.t6(creep);
                                 StructureLink sl = (StructureLink) s;
                                 return sl.store.energy >= minCapacity;
                             }
 
-                            Tmp.t7(creep);
                             return false;
                         }
                 )
         );
 
-        Tmp.t8(creep);
         return structure;
     }
 }
