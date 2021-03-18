@@ -331,7 +331,7 @@ public class Runner {
         }
     }
 
-    private static boolean handleRefill(Creep creep, Structure refillStructure) throws Exception {
+    public static boolean handleRefill(Creep creep, Structure refillStructure) throws Exception {
         double res = creep.withdraw(refillStructure, RESOURCE_ENERGY);
 
         if (res == OK) {
@@ -372,7 +372,7 @@ public class Runner {
         }
     }
 
-    private static Structure getRefillStructure(Creep creep) {
+    public static Structure getRefillStructure(Creep creep) {
         Structure structure;
         double minCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY) / 4;
 

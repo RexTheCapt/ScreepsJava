@@ -22,4 +22,10 @@ public class GameError extends Exception {
     public static Exception newInvalidArgs(Creep creep) {
         return new Exception(creep.name + " : got invalid args");
     }
+
+    public static Exception newNoBodyPart(Creep creep) {
+        String msg = creep.name + " did not have the required body part to finish he's task";
+        creep.suicide();
+        return new Exception(msg);
+    }
 }

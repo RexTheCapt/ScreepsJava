@@ -14,132 +14,79 @@ import static def.screeps.Globals.*;
 
 public class Builder {
     public static void run(Creep creep) throws Exception {
-        Flag flag = Game.flags.$get("deconstruct");
+        if (creep.store.energy == 0)
+            creep.memory.refill = true;
 
-        if (flag != null && flag.color == COLOR_RED && flag.secondaryColor == COLOR_RED) {
-            log(creep, "deconstruction flag found");
-            Structure[] structures = flag.pos.lookFor(LOOK_STRUCTURES);
+        if (creep.memory.refill) {
+            log(creep, "refilling");
+            Structure refillStructure = Runner.getRefillStructure(creep);
 
-            if (structures == null || structures.length == 0) {
-                log(creep, "no structures found, removing flag");
-                flag.remove();
-            } else {
-                log(creep, "dismantling " + structures[0].structureType);
-                double res = creep.dismantle(structures[0]);
-
-                if (res == OK) {
-                    log(creep, structures[0].hits + " hits left");
-                } else if (res == ERR_NOT_IN_RANGE) {
-                    log(creep, "moving to " + structures[0].structureType);
-                    creep.moveTo(structures[0].pos);
-                } else {
-                    log(creep, "Builder.buildSite");
-                    creep.say("C: " + res);
-                    throw GameError.newUnhandledCode(creep, res, "Builder.run");
-                }
-            }
-
-            return;
-        }
-
-        if (!creep.memory.refill)
-            buildSite(creep);
-        else
-            refill(creep);
-    }
-
-    private static void refill(Creep creep) {
-        log(creep, "refill");
-        StructureContainer container = getContainer(creep);
-
-        if (container != null)
-        {
-            log(creep, "found container");
-
-            log(creep, "taking energy");
-            double res = creep.withdraw(container, RESOURCE_ENERGY);
-
-            if (res != OK) {
-                if (res == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container.pos);
-                    log(creep, "failed, moving to energy");
-                }
-                else if (res == ERR_FULL)
-                {
-                    log(creep, "full: " + creep.store.getCapacity(RESOURCE_ENERGY));
-                    creep.memory.refill = false;
-                }
-                else
-                    log(creep, res, "Builder.refill");
-            }
-            else
-                log(creep, "Energy taken, current: " + creep.store.energy);
-        }
-    }
-
-    private static StructureContainer getContainer(Creep creep) {
-        log(creep, "searching for container...");
-        return creep.pos.findClosestByPath(
-                FIND_STRUCTURES,
-                Helper.findFilter((Structure s) ->
-                        s.structureType.equals(STRUCTURE_CONTAINER) &&
-                                (((StructureContainer) s).store.energy >= creep.store.getCapacity(RESOURCE_ENERGY))
-                )
-        );
-    }
-
-    private static void buildSite(Creep creep) {
-        ConstructionSite constructionSite = getConstructionSite(creep);
-
-        if (creep.memory.destinationId == null || creep.memory.destinationId.isEmpty()) {
-            if (constructionSite == null) {
-                log(creep, "construction site not found, upgrading controller");
-                creep.memory.upgradingController = true;
-                Upgrade.run(creep);
-                return;
-            } else {
-                creep.memory.upgradingController = false;
-                log(creep, "assigned construction site");
-                creep.memory.destinationId = constructionSite.id;
-            }
-        }
-
-        log(creep, "building");
-        double res = creep.build(constructionSite);
-
-        if (res != OK) {
-            if (res == ERR_NOT_ENOUGH_RESOURCES) {
-                log(creep, "Need to refill");
-                creep.memory.destinationId = null;
-                creep.memory.refill = true;
-            }
-            else if (res == ERR_NOT_IN_RANGE) {
-                log(creep, "going to construction site");
-                creep.moveTo(constructionSite.pos);
-            } else if (res == ERR_INVALID_TARGET) {
-                log(creep, "invalid construction target, clearing");
-                creep.memory.destinationId = null;
-            } else {
-                creep.say("C: " + res);
-                log(creep, res, "Builder.buildSite");
-            }
-        }
-    }
-
-    private static ConstructionSite getConstructionSite(Creep creep) {
-        if (creep.memory.destinationId == null || creep.memory.destinationId.isEmpty()) {
-            log(creep, "finding construction");
-
-            Flag priorityBuild = Game.flags.$get("priorityBuild");
-
-            if (priorityBuild != null && priorityBuild.room.name.equals(creep.room.name)) {
-                log(creep, "priority found");
-                return priorityBuild.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
-            } else
-                return creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES);
+            if (Runner.handleRefill(creep, refillStructure) && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0)
+                creep.memory.refill = false;
         } else {
-            log(creep, "getting construction site from id");
-            return Game.getObjectById(creep.memory.destinationId);
+            // TODO: Implement deconstruction flag
+
+            log(creep, "building");
+            Flag priorityBuildFlag = Game.flags.$get("priorityBuild");
+            ConstructionSite constructSite = null;
+
+            // TODO: use destination id
+            if (creep.memory.destinationId != null) {
+                log(creep, "getting site by destination id");
+                constructSite = Game.getObjectById(creep.memory.destinationId);
+
+                if (constructSite != null) {
+                    if (constructSite.progress > 0) {
+                        log(creep, "got site");
+                    } else {
+                        log(creep, "failed");
+                        constructSite = null;
+                        creep.memory.destinationId = null;
+                    }
+                } else {
+                    log(creep, "failed");
+                    constructSite = null;
+                    creep.memory.destinationId = null;
+                }
+            }
+
+            if (constructSite == null) {
+                if (priorityBuildFlag != null) {
+                    log(creep, "priority flag found, getting closest by range for flag");
+                    constructSite = priorityBuildFlag.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+                } else {
+                    log(creep, "finding closest by path");
+                    constructSite = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES);
+                }
+            }
+
+            buildStructure(creep, constructSite);
+        }
+    }
+
+    private static void buildStructure(Creep creep, ConstructionSite constructSite) throws Exception {
+        double res = creep.build(constructSite);
+
+        if (res == OK) {
+            log(creep, constructSite.structureType + " built");
+        } else if (res == ERR_NOT_OWNER) {
+            log(creep, "this construction site is not mine!");
+            // TODO: do something if im not the owner.
+        } else if (res == ERR_BUSY) {
+            log(creep, "still spawning");
+        } else if (res == ERR_NOT_ENOUGH_RESOURCES) {
+            log(creep, "refill needed");
+            creep.memory.refill = true;
+            run(creep);
+        } else if (res == ERR_INVALID_TARGET) {
+            log(creep, "this is an invalid target");
+            creep.memory.destinationId = null;
+        } else if (res == ERR_NOT_IN_RANGE) {
+            log(creep, "moving to construction site");
+            creep.moveTo(constructSite.pos);
+        } else if (res == ERR_NO_BODYPART) {
+            log(creep, "I have no body part for this, time to die");
+            throw GameError.newNoBodyPart(creep);
         }
     }
 }
