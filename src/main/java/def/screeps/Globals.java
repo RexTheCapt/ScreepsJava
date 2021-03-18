@@ -359,6 +359,59 @@ public final class Globals {
     public static String RESOURCE_EMANATION;
     public static String RESOURCE_ESSENCE;
 
+    public static String RESOURCE_OPS;
 
+
+
+    public static double EVENT_ATTACK;
+    public static double EVENT_OBJECT_DESTROYED;
+    public static double EVENT_ATTACK_CONTROLLER;
+    public static double EVENT_BUILD;
+    public static double EVENT_HARVEST;
+    public static double EVENT_HEAL;
+    public static double EVENT_REPAIR;
+    public static double EVENT_RESERVE_CONTROLLER;
+    public static double EVENT_UPGRADE_CONTROLLER;
+    public static double EVENT_EXIT;
+    public static double EVENT_POWER;
+    public static double EVENT_TRANSFER;
+
+    public static double EVENT_ATTACK_TYPE_MELEE;
+    public static double EVENT_ATTACK_TYPE_RANGED;
+    public static double EVENT_ATTACK_TYPE_RANGED_MASS;
+    public static double  EVENT_ATTACK_TYPE_DISMANTLE;
+    public static double EVENT_ATTACK_TYPE_HIT_BACK;
+    public static double EVENT_ATTACK_TYPE_NUKE;
+
+    public static double EVENT_HEAL_TYPE_MELEE;
+    public static double EVENT_HEAL_TYPE_RANGED;
+
+    public static double POWER_LEVEL_MULTIPLY;
+    public static double POWER_LEVEL_POW;
+    public static double POWER_CREEP_SPAWN_COOLDOWN;
+    public static double POWER_CREEP_DELETE_COOLDOWN;
+    public static double POWER_CREEP_MAX_LEVEL;
+    public static double POWER_CREEP_LIFE_TIME;
+    public static double PWR_GENERATE_OPS;
+    public static double PWR_OPERATE_SPAWN;
+    public static double PWR_OPERATE_TOWER;
+    public static double PWR_OPERATE_STORAGE;
+    public static double PWR_OPERATE_LAB;
+    public static double PWR_OPERATE_EXTENSION;
+    public static double PWR_OPERATE_OBSERVER;
+    public static double PWR_OPERATE_TERMINAL;
+    public static double PWR_DISRUPT_SPAWN;
+    public static double PWR_DISRUPT_TOWER;
+    public static double PWR_DISRUPT_SOURCE;
+    public static double PWR_SHIELD;
+    public static double PWR_REGEN_SOURCE;
+    public static double PWR_REGEN_MINERAL;
+    public static double PWR_DISRUPT_TERMINAL;
+    public static double PWR_OPERATE_POWER;
+    public static double PWR_FORTIFY;
+    public static double PWR_OPERATE_CONTROLLER;
+    public static double PWR_OPERATE_FACTORY;
+    public static double EFFECT_INVULNERABILITY;
+    public static double EFFECT_COLLAPSE_TIMER;
 }
 

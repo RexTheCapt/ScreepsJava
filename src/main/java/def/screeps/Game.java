@@ -51,7 +51,6 @@ public abstract class Game extends jsweet.lang.Object {
     /**
      * Get an object with the specified unique ID. It may be a game object of any type. Only objects from the rooms which are visible to you can be accessed.
      * @param id The unique identificator.
-     * @returns an object instance or null if it cannot be found.
      */
     native public static <T> T getObjectById(String id);
     /**
@@ -96,5 +95,11 @@ public abstract class Game extends jsweet.lang.Object {
      */
     native public static void notify(String message);
     public static GameShard shard;
+    public static PowerCreeps powerCreeps;
+
+    @jsweet.lang.ObjectType
+    public static class PowerCreeps extends jsweet.lang.Object {
+        native public PowerCreep $get(String creepName);
+    }
 }
 
