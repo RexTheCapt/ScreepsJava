@@ -28,4 +28,8 @@ public class GameError extends Exception {
         creep.suicide();
         return new Exception(msg);
     }
+
+    public static Exception newInvalidTarget(Creep creep) {
+        return new Exception(creep.name + " invalid target");
+    }
 }
