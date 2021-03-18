@@ -374,7 +374,7 @@ public class Runner {
 
     public static Structure getRefillStructure(Creep creep) {
         Structure structure;
-        double minCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY) / 4;
+        double minCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY);
 
         if (creep.memory.destinationId != null) {
             log(creep, "checking destination id for refill");
