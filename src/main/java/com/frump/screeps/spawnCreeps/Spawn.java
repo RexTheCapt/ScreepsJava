@@ -182,15 +182,6 @@ public class Spawn {
             ops.memory.$set("role", csi.role);
 
             ss.spawnCreep(csi.body, csi.name, ops);
-
-            // TODO: Keep an eye on the spawn queue and judge if this code is actually needed
-            /*
-            if (ret == OK || ret == ERR_INVALID_ARGS)
-                queue.shift();
-
-            if (BodyBuilder.getTotalCost(csi.body) > room.energyCapacityAvailable)
-                queue.shift();
-            */
         }
     }
 }
