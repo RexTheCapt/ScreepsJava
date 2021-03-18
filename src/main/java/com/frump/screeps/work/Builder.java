@@ -1,13 +1,11 @@
 package com.frump.screeps.work;
 
 import com.frump.screeps.GameError;
-import com.frump.screeps.Helper;
 import def.screeps.ConstructionSite;
 import def.screeps.Creep;
 import def.screeps.Flag;
 import def.screeps.Game;
 import def.screeps.Structure;
-import def.screeps.StructureContainer;
 
 import static com.frump.screeps.CustomLogger.log;
 import static def.screeps.Globals.*;
