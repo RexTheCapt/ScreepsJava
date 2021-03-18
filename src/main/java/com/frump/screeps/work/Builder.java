@@ -68,8 +68,12 @@ public class Builder {
                 }
             }
 
-            if (constructSite != null)
+            if (constructSite != null) {
                 buildStructure(creep, constructSite);
+            } else {
+                if (!Repair.run(creep))
+                    Upgrade.run(creep);
+            }
         }
     }
 
