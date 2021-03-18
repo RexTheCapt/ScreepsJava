@@ -99,7 +99,7 @@ public class Runner {
             creep.moveTo(tower.pos);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.giveTower");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 
@@ -135,7 +135,7 @@ public class Runner {
             creep.moveTo(extension.pos);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.giveExtension");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 
@@ -193,7 +193,7 @@ public class Runner {
             run(creep);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.giveSpawn");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 
@@ -241,7 +241,7 @@ public class Runner {
         } else if (res == ERR_NOT_ENOUGH_ENERGY) {
             log(creep, "already empty");
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.emptyStoreLink 1");
+            throw GameError.newUnhandledCode(creep, res);
         }
 
         res = creep.withdraw(link, RESOURCE_ENERGY);
@@ -254,7 +254,7 @@ public class Runner {
         } else if (res == ERR_FULL) {
             log(creep, "already full");
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.emptyStoreLink 2");
+            throw GameError.newUnhandledCode(creep, res);
         }
 
         return true;
@@ -289,7 +289,7 @@ public class Runner {
             run(creep);
             return true;
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.giveUpgrade");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 
@@ -368,7 +368,7 @@ public class Runner {
         } else if (res == ERR_INVALID_ARGS) {
             throw GameError.newInvalidArgs(creep);
         } else {
-            throw GameError.newUnhandledCode(creep, res, "Runner.handleRefill");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 

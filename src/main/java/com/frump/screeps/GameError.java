@@ -11,8 +11,8 @@ public class GameError extends Exception {
     public double lineNumber;
     public double columnNumber;
 
-    public static Exception newUnhandledCode(Creep creep, double responseCode, String location) {
-        return new Exception(creep.name + " : unhandled code " + responseCode + " in " + location);
+    public static Exception newUnhandledCode(Creep creep, double responseCode) {
+        return new Exception(creep.name + " : unhandled code " + responseCode);
     }
 
     public static Exception newError(Creep creep, String message) {

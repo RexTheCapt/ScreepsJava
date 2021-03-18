@@ -55,7 +55,7 @@ public class Miner {
         } else {
             creep.say("C: " + res);
             log(creep, "Miner.mineSource");
-            throw GameError.newUnhandledCode(creep, res, "Miner.mineSource");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 
@@ -159,7 +159,7 @@ public class Miner {
         } else {
             creep.say("C: " + res);
             log(creep, "Miner.depositEnergy");
-            throw GameError.newUnhandledCode(creep, res, "Miner.depositEnergy");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 
@@ -189,7 +189,7 @@ public class Miner {
                 } else {
                     creep.say("C: " + res);
                     log(creep, "Miner.buildFixCloseBy");
-                    throw GameError.newUnhandledCode(creep, res, "Miner.buildFixCloseBy");
+                    throw GameError.newUnhandledCode(creep, res);
                 }
             }
         } else {
@@ -202,7 +202,7 @@ public class Miner {
             } else {
                 creep.say("C: " + res);
                 log(creep, "Miner.buildFixCloseBy");
-                throw GameError.newUnhandledCode(creep, res, "Miner.buildFixCloseBy");
+                throw GameError.newUnhandledCode(creep, res);
             }
         }
     }

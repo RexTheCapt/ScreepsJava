@@ -86,7 +86,7 @@ public class DeathStroll {
         } else if (res == ERR_INVALID_ARGS) {
             throw GameError.newInvalidArgs(creep);
         } else {
-            throw GameError.newUnhandledCode(creep, res, "DeathStroll.run");
+            throw GameError.newUnhandledCode(creep, res);
         }
     }
 }
