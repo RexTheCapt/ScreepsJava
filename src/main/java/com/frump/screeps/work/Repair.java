@@ -13,9 +13,14 @@ import static com.frump.screeps.Main.minWallHealth;
 import static def.screeps.Globals.*;
 
 public class Repair {
-    public static void run(Creep creep) {
-        if (creep.store.energy == 0 && !creep.memory.refill) {
-            log(creep, "need to refill");
+    /**
+     * Returns true if structure is repaired.
+     * @param creep creep.
+     * @return true on repair.
+     * @throws Exception when something goes wrong.
+     */
+    public static boolean run(Creep creep) throws Exception {
+        if (creep.store.energy == 0) {
             creep.memory.refill = true;
             creep.memory.destinationId = null;
         } else if (creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0 && creep.memory.refill) {
