@@ -28,3 +28,4 @@ target/
 Gruntfile.js
 package-lock.json
 dist/
+src/main/java/com/frump/screeps/ClaimRoom.java
