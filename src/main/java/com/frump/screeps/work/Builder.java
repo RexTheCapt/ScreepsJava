@@ -58,9 +58,18 @@ public class Builder {
                     log(creep, "finding closest by path");
                     constructSite = creep.pos.findClosestByPath(FIND_MY_CONSTRUCTION_SITES);
                 }
+
+                if (constructSite != null) {
+                    log(creep, "construction site found");
+                    creep.memory.destinationId = constructSite.id;
+                } else {
+                    log(creep, "no construction site found");
+                    creep.memory.destinationId = null;
+                }
             }
 
-            buildStructure(creep, constructSite);
+            if (constructSite != null)
+                buildStructure(creep, constructSite);
         }
     }
 
