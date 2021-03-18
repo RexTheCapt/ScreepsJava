@@ -331,6 +331,13 @@ public class Runner {
         }
     }
 
+    /**
+     * Returns true when the refill is finished.
+     * @param creep creep.
+     * @param refillStructure the structure used to refill creep.
+     * @return true on successful refill.
+     * @throws Exception when something goes wrong.
+     */
     public static boolean handleRefill(Creep creep, Structure refillStructure) throws Exception {
         double res = creep.withdraw(refillStructure, RESOURCE_ENERGY);
 
@@ -372,6 +379,11 @@ public class Runner {
         }
     }
 
+    /**
+     * Get an suitable refill structure.
+     * @param creep creep.
+     * @return refill structure or null.
+     */
     public static Structure getRefillStructure(Creep creep) {
         Structure structure;
         double minCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY);
@@ -416,5 +428,15 @@ public class Runner {
         );
 
         return structure;
+    }
+
+    /**
+     * Returns true when refill is completed.
+     * @param creep creep.
+     * @return true on completion, false on anything else.
+     * @throws Exception when something fails.
+     */
+    public static boolean handleRefill(Creep creep) throws Exception {
+        return handleRefill(creep, getRefillStructure(creep));
     }
 }
