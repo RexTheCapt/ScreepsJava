@@ -17,12 +17,12 @@ public class Upgrade {
     public static boolean run(Creep creep) throws Exception {
         StructureController controller = creep.room.controller;
 
-        if (controller.ticksToDowngrade < controller.progressTotal / 0.20) {
+        if (controller.ticksToDowngrade < controller.progressTotal * 0.20) {
             if (creep.store.energy == 0) {
                 creep.memory.refill = true;
             }
 
-            if (Runner.handleRefill(creep)) {
+            if (creep.memory.refill && Runner.handleRefill(creep)) {
                 creep.memory.refill = false;
             }
         }
