@@ -9,4 +9,8 @@ public class CreepSpawnInfo extends Object {
     public String role;
     public String roomName;
     public String name;
+    /**
+     * The name of the assigned claim flag
+     */
+    public String claimFlag;
 }

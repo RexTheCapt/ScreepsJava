@@ -5,6 +5,7 @@ import com.frump.screeps.memoryDef.CreepSpawnInfo;
 import com.frump.screeps.memoryDef.RoomMemory;
 import com.frump.screeps.memoryDef.SpawnMemory;
 import com.frump.screeps.spawnCreeps.Spawn;
+import com.frump.screeps.work.Claim;
 import com.frump.screeps.work.Miner;
 import com.frump.screeps.work.Builder;
 import com.frump.screeps.work.Repair;
@@ -26,6 +27,7 @@ import jsweet.lang.Object;
 
 import java.util.HashMap;
 
+import static com.frump.screeps.CustomLogger.log;
 import static def.screeps.Globals.FIND_MY_CREEPS;
 import static def.screeps.Globals.FIND_STRUCTURES;
 import static def.screeps.Globals.STRUCTURE_RAMPART;
@@ -55,6 +57,8 @@ public class Main {
     public static final double role_repair_max = 1;
     public static final boolean role_repair_enabled = true;
 
+    public static final String role_claim = "claimer";
+
     public static final boolean enable_death_stroll = false;
 
     public static final boolean spawn_only_when_max_energy = false;
@@ -67,7 +71,7 @@ public class Main {
     private static final Array<Double> rollingAverage = new Array<>();
 
     // TODO: Get this number to automatically increment
-    private static final int version_number = 9;
+    private static final int version_number = 11;
 
     public void init(){
         if(Memory.constructionSites == null){
@@ -104,6 +108,7 @@ public class Main {
             Memory.rooms = new Memory.Rooms();
         }
 
+        // Map rooms.
         Mapper<Room> rooms = new Mapper<>(Game.rooms);
         for (String roomName : rooms.getKeys()) {
             // Initialize room
@@ -152,14 +157,18 @@ public class Main {
             } catch (Exception e) {
                 GameError ge = (GameError) e;
 
-                String nl = "\r\n";
+                String nl = "\n";
 
                 Array<String> log = creep.memory.log;
                 double offset = 5;
                 StringBuilder msg = new StringBuilder("Version: " + version_number + nl + "Last " + offset + " actions:" + nl);
 
-                for (double i = log.length - offset; i < log.length; i++) {
-                    msg.append(log.$get(i)).append(nl);
+                if (log != null) {
+                    for (double i = log.length - offset; i < log.length; i++) {
+                        msg.append(log.$get(i)).append(nl);
+                    }
+                } else {
+                    msg.append("null").append(nl);
                 }
 
                 msg.append(nl);
@@ -245,8 +254,11 @@ public class Main {
             case role_repair:
                 Repair.run(creep);
                 break;
+            case role_claim:
+                Claim.run(creep);
+                break;
             default:
-                CustomLogger.log(creep, null, "No task for role");
+                log(creep, null, "No task for role");
                 break;
         }
     }
@@ -278,6 +290,8 @@ public class Main {
 
             if (role_repair_enabled)
                 Spawn.repair(roleCount, room, queue);
+
+            Spawn.claim(roleCount, room, queue);
         }
 
         Spawn.handleQueue(spawns, queue, room);

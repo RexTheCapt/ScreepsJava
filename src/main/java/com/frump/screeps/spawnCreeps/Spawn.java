@@ -2,6 +2,8 @@ package com.frump.screeps.spawnCreeps;
 
 import com.frump.screeps.BodyBuilder;
 import com.frump.screeps.memoryDef.CreepSpawnInfo;
+import def.screeps.Flag;
+import def.screeps.Game;
 import def.screeps.Memory;
 import def.screeps.Room;
 import def.screeps.RoomVisual;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 
 import static com.frump.screeps.Main.role_builder;
 import static com.frump.screeps.Main.role_builder_max;
+import static com.frump.screeps.Main.role_claim;
 import static com.frump.screeps.Main.role_miner;
 import static com.frump.screeps.Main.role_miner_max;
 import static com.frump.screeps.Main.role_repair;
@@ -23,6 +26,7 @@ import static com.frump.screeps.Main.role_runner_max;
 import static com.frump.screeps.Main.role_upgrade;
 import static com.frump.screeps.Main.role_upgrade_max;
 import static def.screeps.Globals.CARRY;
+import static def.screeps.Globals.CLAIM;
 import static def.screeps.Globals.WORK;
 
 public class Spawn {
@@ -151,6 +155,28 @@ public class Spawn {
         }
     }
 
+    public static void claim(HashMap<String, Double> roleCount, Room room, Array<CreepSpawnInfo> queue) {
+        if (roleCount.get(role_claim) == null || (roleCount.get(role_claim) < 1)) {
+            Flag claimFlag = Game.flags.$get("claim");
+
+            if (claimFlag == null)
+                return;
+
+            CreepSpawnInfo csi = (CreepSpawnInfo) new jsweet.lang.Object();
+            csi.role = role_claim;
+            csi.roomName = room.name;
+            csi.name = "claim";
+
+            BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
+            boolean canClaim = bb.addParts(new String[] { CLAIM });
+
+            if (canClaim) {
+                csi.body = bb.getBody();
+                queue.push(csi);
+            }
+        }
+    }
+
     public static void handleQueue(StructureSpawn[] spawns, Array<CreepSpawnInfo> queue, Room room) {
         RoomVisual visual = room.visual;
         TextStyle textStyle = new TextStyle();
@@ -169,10 +195,13 @@ public class Spawn {
 
         for (StructureSpawn ss : spawns) {
             CreepSpawnInfo csi = queue.$get(0);
+            if (csi == null)
+                return;
 
-            if (ss.spawning != null || csi == null) {
-                if (ss.spawning != null)
-                    visual.text(ss.spawning.remainingTime + " " + ss.spawning.name, ss.pos.x + 1, ss.pos.y, textStyle);
+            System.out.println("Spawning: " + csi.name);
+
+            if (ss.spawning != null) {
+                visual.text(ss.spawning.remainingTime + " " + ss.spawning.name, ss.pos.x + 1, ss.pos.y, textStyle);
                 continue;
             }
 
