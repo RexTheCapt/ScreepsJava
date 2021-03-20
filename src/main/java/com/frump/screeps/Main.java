@@ -46,11 +46,11 @@ public class Main {
     public static final boolean role_runner_enabled = true;
 
     public static final String role_upgrade = "upgrader";
-    public static final double role_upgrade_max = 2;
+    public static final double role_upgrade_max = 1;
     public static final boolean role_upgrade_enabled = true;
 
     public static final String role_builder = "builder";
-    public static final double role_builder_max = 2;
+    public static final double role_builder_max = 1;
     public static final boolean role_builder_enabled = true;
 
     public static final String role_repair = "repairer";
@@ -71,7 +71,7 @@ public class Main {
     private static final Array<Double> rollingAverage = new Array<>();
 
     // TODO: Get this number to automatically increment
-    private static final int version_number = 13;
+    private static final int version_number = 14;
 
     public void init(){
         if(Memory.constructionSites == null){

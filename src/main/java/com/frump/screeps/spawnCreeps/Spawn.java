@@ -44,7 +44,6 @@ public class Spawn {
             Boolean canCarry = bb.addParts(new String[]{CARRY});
             Boolean canWork = bb.addParts(new String[]{WORK});
             bb.repeatablyAddPartsX(new String[]{CARRY, WORK}, 2);
-            bb.repeatablyAddPartsX(new String[]{WORK}, 5);
 
             if (canCarry && canWork) {
                 csi.body = bb.getBody();
@@ -122,7 +121,7 @@ public class Spawn {
             BodyBuilder bb = new BodyBuilder((int) room.energyAvailable, false);
             Boolean canCarry = bb.addParts(new String[]{CARRY});
             Boolean canWork = bb.addParts(new String[]{WORK});
-            bb.repeatablyAddPartsX(new String[]{CARRY, WORK}, 3);
+            bb.repeatablyAddPartsX(new String[]{CARRY, WORK}, 2);
 
             if (canCarry && canWork) {
                 csi.body = bb.getBody();

@@ -69,8 +69,7 @@ public class Builder {
             if (constructSite != null) {
                 buildStructure(creep, constructSite);
             } else {
-                if (!Repair.run(creep))
-                    Upgrade.run(creep);
+                Repair.run(creep);
             }
         }
     }
