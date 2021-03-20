@@ -1,9 +1,11 @@
 package com.frump.screeps.work;
 
+import com.frump.screeps.Functions;
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
 import def.screeps.Creep;
 import def.screeps.Game;
+import def.screeps.Resource;
 import def.screeps.Room;
 import def.screeps.Structure;
 import def.screeps.StructureContainer;
@@ -14,6 +16,7 @@ import def.screeps.StructureStorage;
 import def.screeps.StructureTower;
 
 import static com.frump.screeps.CustomLogger.log;
+import static com.frump.screeps.Main.role_runner;
 import static com.frump.screeps.Main.role_upgrade;
 import static def.screeps.Globals.*;
 
@@ -36,6 +39,10 @@ public class Runner {
                 creep.moveTo(storage.pos);
             }
 
+            return;
+        }
+
+        if (pickupDroppedResource(creep)) {
             return;
         }
 
@@ -63,6 +70,54 @@ public class Runner {
 
             // TODO: create normal procedures
         }
+    }
+
+    /**
+     * Pickup dropped resources.
+     * @param creep creep to pickup.
+     * @return true if resource exists.
+     */
+    private static boolean pickupDroppedResource(Creep creep) throws Exception {
+        log(creep, "looking for dropped resource");
+        Resource resource = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
+
+        if (resource == null) {
+            log(creep, "no dropped resource");
+            return false;
+        }
+
+        log(creep, "picking up resource");
+        double res = creep.pickup(resource);
+
+        if (res == OK) {
+            log(creep, "picked up resource");
+        } else if (res == ERR_NOT_OWNER) {
+            throw GameError.newError(creep, "not owner");
+        } else if (res == ERR_BUSY) {
+            log(creep, "still spawning");
+        } else if (res == ERR_INVALID_TARGET) {
+            log(creep, "invalid target");
+            throw GameError.newError(creep, "invalid pickup resource");
+        } else if (res == ERR_FULL) {
+            log(creep, "inventory full");
+
+            StructureStorage storage = creep.pos.findClosestByRange(FIND_STRUCTURES,
+                    Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_STORAGE)));
+
+            if (storage == null) {
+                log(creep, "storage not found");
+                return false;
+            }
+
+            Functions.transfer(creep, storage, RESOURCE_ENERGY);
+        } else if (res == ERR_NOT_IN_RANGE) {
+            log(creep, "moving to resource");
+            creep.moveTo(resource.pos);
+        } else {
+            throw GameError.newUnhandledCode(creep, res);
+        }
+
+        return true;
     }
 
     private static boolean giveTower(Creep creep) throws Exception {
@@ -388,6 +443,7 @@ public class Runner {
         Structure structure;
         double minCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY);
 
+        // Det destination from memory.
         if (creep.memory.destinationId != null) {
             log(creep, "checking destination id for refill");
             structure = Game.getObjectById(creep.memory.destinationId);
@@ -401,6 +457,7 @@ public class Runner {
             }
         }
 
+        // Get destination from path.
         log(creep, "searching for closest structure");
         structure = creep.pos.findClosestByPath(FIND_STRUCTURES,
                 Helper.findFilter((Structure s) -> {
@@ -413,6 +470,21 @@ public class Runner {
                                 StructureStorage ss = (StructureStorage) s;
                                 return ss.store.energy >= minCapacity;
                             }
+
+                            if (creep.room.energyAvailable != creep.room.energyCapacityAvailable) {
+                                switch (creep.memory.role) {
+                                    case role_runner:
+                                        break;
+                                    case role_upgrade:
+                                        if (creep.room.controller.ticksToDowngrade > 20000) {
+                                            return false;
+                                        }
+                                        break;
+                                    default:
+                                        return false;
+                                }
+                            }
+
                             if (s.structureType.equals(STRUCTURE_CONTAINER)) {
                                 StructureContainer sc = (StructureContainer) s;
                                 return sc.store.energy >= minCapacity;

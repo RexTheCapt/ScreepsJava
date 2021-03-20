@@ -32,4 +32,8 @@ public class GameError extends Exception {
     public static Exception newInvalidTarget(Creep creep) {
         return new Exception(creep.name + " invalid target");
     }
+
+    public static Exception newNotOwner(Creep creep) {
+        return new Exception(creep.name + " is not one of my creeps");
+    }
 }

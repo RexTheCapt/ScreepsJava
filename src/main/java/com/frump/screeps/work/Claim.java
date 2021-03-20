@@ -1,6 +1,5 @@
 package com.frump.screeps.work;
 
-import com.frump.screeps.ClaimRoom;
 import com.frump.screeps.GameError;
 import def.screeps.Creep;
 import def.screeps.Flag;
@@ -44,16 +43,12 @@ public class Claim {
 
         if (claimRoom == null || !creep.room.name.equals(claimRoom.name)) {
             log(creep, "moving to room");
-            return moveToRoom(creep, flag);
+            creep.moveTo(flag.pos);
+            return false;
         } else {
             log(creep, "claiming");
             return claimController(creep, flag);
         }
-    }
-
-    private static boolean moveToRoom(Creep creep, Flag flag) {
-        creep.moveTo(flag.pos);
-        return false;
     }
 
     private static boolean claimController(Creep creep, Flag flag) throws Exception {
