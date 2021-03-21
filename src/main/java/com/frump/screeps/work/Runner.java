@@ -115,35 +115,38 @@ public class Runner {
         }
 
         // TODO: fix a problem where the creep thinks it is full.
-        if (storage.store.energy > 200000) {
-            if (creep.store.getFreeCapacity() == 0) {
-                log(creep, "transferring to terminal");
-                double res = creep.transfer(terminal, RESOURCE_ENERGY);
+        return false;
+//        if (storage.store.energy > 200000) {
+//            log(creep, "Free capacity: " + creep.store.getFreeCapacity());
+//            if (creep.store.getFreeCapacity() == 0) {
+//                log(creep, "transferring to terminal");
+//                double res = creep.transfer(terminal, RESOURCE_ENERGY);
+//
+//                if (res == ERR_NOT_IN_RANGE)
+//                    creep.moveTo(terminal.pos);
+//            }
+//
+//            log(creep, "Free capacity: " + Game.creeps.$get(creep.name).store.getFreeCapacity());
+//            if (Game.creeps.$get(creep.name).store.getFreeCapacity() != 0) {
+//                log(creep, "withdrawing from storage");
+//                double res = creep.withdraw(storage, RESOURCE_ENERGY, storage.store.energy - 200000);
+//
+//                if (res == ERR_NOT_IN_RANGE)
+//                    creep.moveTo(storage.pos);
+//                else if (res == ERR_FULL) {
+//                    res = creep.transfer(terminal, RESOURCE_ENERGY);
+//                    log(creep, "code: " + res);
+//                } else {
+//                    throw GameError.newUnhandledCode(creep, res);
+//                }
+//            }
+//        } else {
+//            creep.room.memory.seller = null;
+//        }
 
-                if (res == ERR_NOT_IN_RANGE)
-                    creep.moveTo(terminal.pos);
-            }
+//        creep.say("sell");
 
-            if (creep.store.getFreeCapacity() != 0) {
-                log(creep, "withdrawing from storage");
-                double res = creep.withdraw(storage, RESOURCE_ENERGY, storage.store.energy - 200000);
-
-                if (res == ERR_NOT_IN_RANGE)
-                    creep.moveTo(storage.pos);
-                else if (res == ERR_FULL) {
-                    res = creep.transfer(terminal, RESOURCE_ENERGY);
-                    log(creep, "code: " + res);
-                } else {
-                    throw GameError.newUnhandledCode(creep, res);
-                }
-            }
-        } else {
-            creep.room.memory.seller = null;
-        }
-
-        creep.say("sell");
-
-        return true;
+//        return true;
     }
 
     /**
