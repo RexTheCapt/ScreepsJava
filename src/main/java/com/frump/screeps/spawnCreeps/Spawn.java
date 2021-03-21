@@ -1,6 +1,7 @@
 package com.frump.screeps.spawnCreeps;
 
 import com.frump.screeps.BodyBuilder;
+import com.frump.screeps.Functions;
 import com.frump.screeps.memoryDef.CreepSpawnInfo;
 import def.screeps.Flag;
 import def.screeps.Game;
@@ -18,7 +19,6 @@ import static com.frump.screeps.Main.role_builder;
 import static com.frump.screeps.Main.role_builder_max;
 import static com.frump.screeps.Main.role_claim;
 import static com.frump.screeps.Main.role_miner;
-import static com.frump.screeps.Main.role_miner_max;
 import static com.frump.screeps.Main.role_repair;
 import static com.frump.screeps.Main.role_repair_max;
 import static com.frump.screeps.Main.role_runner;
@@ -76,7 +76,7 @@ public class Spawn {
     }
 
     public static void miner(HashMap<String, Double> roleCount, Room room, Array<CreepSpawnInfo> queue) {
-        if (roleCount.get(role_miner) == null || roleCount.get(role_miner) < role_miner_max)
+        if (roleCount.get(role_miner) == null || roleCount.get(role_miner) < Functions.getMiningSpots(room))
         {
             //noinspection ConstantConditions
             CreepSpawnInfo csi = (CreepSpawnInfo) new jsweet.lang.Object();

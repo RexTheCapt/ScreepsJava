@@ -13,6 +13,7 @@ import def.screeps.StructureExtension;
 import def.screeps.StructureLink;
 import def.screeps.StructureSpawn;
 import def.screeps.StructureStorage;
+import def.screeps.StructureTerminal;
 import def.screeps.StructureTower;
 
 import static com.frump.screeps.CustomLogger.log;
@@ -42,11 +43,15 @@ public class Runner {
             return;
         }
 
+        if (creep.room.memory.seller.equals(creep.name))
+            if (sellEnergy(creep))
+                return;
+
         if (pickupDroppedResource(creep)) {
             return;
         }
 
-        if (creep.memory.refill == null || creep.memory.refill) {
+        if (creep.memory.refill == null || creep.memory.refill || creep.store.energy == 0) {
             log(creep, "refilling");
             Structure refillStructure = getRefillStructure(creep);
 
@@ -56,7 +61,7 @@ public class Runner {
         } else {
             log(creep, "depositing");
 
-            if (creep.room.controller.ticksToDowngrade < 40000) {
+            if (creep.room.controller.ticksToDowngrade < 15000) {
                 if (giveUpgrade(creep))
                     return;
             }
@@ -66,10 +71,78 @@ public class Runner {
                 if (!giveSpawn(creep))
                     if (!giveExtension(creep))
                         if (!giveTower(creep))
-                            giveUpgrade(creep);
+                            if (!giveUpgrade(creep))
+                                sellEnergy(creep);
 
             // TODO: create normal procedures
         }
+    }
+
+    private static boolean sellEnergy(Creep creep) throws Exception {
+        log(creep, "selling energy");
+        StructureStorage storage = Functions.getStorage(creep);
+
+        if (storage == null) {
+            log(creep, "storage not found");
+            return false;
+        }
+
+        if (Game.creeps.$get(creep.room.memory.seller) == null) {
+            log(creep, "previous seller is gone");
+            creep.room.memory.seller = null;
+        }
+
+        if (creep.room.memory.seller == null && storage.store.energy > 200000) {
+            log(creep, "no seller and storage has energy, self assigning");
+            creep.room.memory.seller = creep.name;
+        }
+
+        if (creep.room.memory.seller == null) {
+            log(creep, "no seller assigned");
+            return false;
+        }
+
+        if (!creep.room.memory.seller.equals(creep.name)) {
+            log(creep, "not assigned seller, will ignore");
+            return false;
+        }
+
+        StructureTerminal terminal = Functions.getTerminal(creep);
+
+        if (terminal == null) {
+            log(creep, "terminal not found");
+            return false;
+        }
+
+        return false;
+        // TODO: fix a problem where the creep thinks it is full.
+//        if (storage.store.energy > 200000) {
+//            if (creep.store.getFreeCapacity() == 0) {
+//                log(creep, "transferring to terminal");
+//                double res = creep.transfer(terminal, RESOURCE_ENERGY);
+//
+//                if (res == ERR_NOT_IN_RANGE)
+//                    creep.moveTo(terminal.pos);
+//            } else if (creep.store.getFreeCapacity() != 0) {
+//                log(creep, "withdrawing from storage");
+//                double res = creep.withdraw(storage, RESOURCE_ENERGY, storage.store.energy - 200000);
+//
+//                if (res == ERR_NOT_IN_RANGE)
+//                    creep.moveTo(storage.pos);
+//                else if (res == ERR_FULL) {
+//                    res = creep.transfer(terminal, RESOURCE_ENERGY);
+//                    log(creep, "code: " + res);
+//                } else {
+//                    throw GameError.newUnhandledCode(creep, res);
+//                }
+//            }
+//        } else {
+//            creep.room.memory.seller = null;
+//        }
+//
+//        creep.say("sell");
+//
+//        return true;
     }
 
     /**
@@ -261,7 +334,7 @@ public class Runner {
         log(creep, "checking store link");
         StructureLink link = Game.getObjectById(creep.room.memory.storageLink);
 
-        if (link.store.energy == 0) {
+        if (link.store.energy <= 50) {
             log(creep, "link has no energy");
             return false;
         }
@@ -286,6 +359,7 @@ public class Runner {
 
         creep.room.memory.storingCreep = creep.name;
 
+        log(creep, "transferring energy to storage");
         double res = creep.transfer(storage, RESOURCE_ENERGY);
 
         if (res == OK) {
@@ -299,6 +373,7 @@ public class Runner {
             throw GameError.newUnhandledCode(creep, res);
         }
 
+        log(creep, "withdrawing from link");
         res = creep.withdraw(link, RESOURCE_ENERGY);
 
         if (res == OK) {

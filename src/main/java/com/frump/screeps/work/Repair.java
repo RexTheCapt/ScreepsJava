@@ -64,7 +64,7 @@ public class Repair {
         } else if (res == ERR_NOT_IN_RANGE) {
             log(creep, "moving to target");
             creep.moveTo(structure.pos);
-            return false;
+            return true;
         } else if (res == ERR_NO_BODYPART) {
             log(creep, "missing body part");
             throw GameError.newNoBodyPart(creep);

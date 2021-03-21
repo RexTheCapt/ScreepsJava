@@ -3,6 +3,8 @@ package com.frump.screeps;
 import def.screeps.Creep;
 import jsweet.lang.Interface;
 
+import static com.frump.screeps.CustomLogger.log;
+
 @Interface
 public class GameError extends Exception {
     public String stack;
@@ -12,6 +14,7 @@ public class GameError extends Exception {
     public double columnNumber;
 
     public static Exception newUnhandledCode(Creep creep, double responseCode) {
+        log(creep, "unhandled code: " + responseCode);
         return new Exception(creep.name + " : unhandled code " + responseCode);
     }
 

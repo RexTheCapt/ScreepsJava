@@ -10,5 +10,7 @@ public class RoomMemory extends Object {
     public Array<ExtensionInfo> extensions;
     public String storageLink;
     public String storingCreep;
+    public Array<ExtractorInfo> extractors;
+    public String seller;
 }
 

@@ -2,6 +2,7 @@ package com.frump.screeps.work;
 
 import com.frump.screeps.GameError;
 import com.frump.screeps.Helper;
+import com.frump.screeps.memoryDef.ExtractorInfo;
 import com.frump.screeps.memoryDef.SourceInfo;
 import def.screeps.ConstructionSite;
 import def.screeps.Creep;
@@ -21,18 +22,22 @@ import static def.screeps.Globals.*;
 
 public class Miner {
     public static void run(Creep creep) throws Exception {
-        if (creep.memory.destinationId == null || creep.memory.destinationId.isEmpty()) {
-            log(creep, "finding energy source");
+        if (creep.memory.destinationId == null) {
+            log(creep, "looking for mining spot");
 
             if (!assignEnergySource(creep))
-                    throw GameError.newError(creep, "energy source not found");
+                    throw GameError.newError(creep, "mining spot not found");
         } else {
-            if (creep.store.energy > creep.store.getCapacity(RESOURCE_ENERGY) / 2) {
-                if (!buildFixCloseBy(creep))
-                    if (!depositEnergy(creep))
-                        runLink(creep);
-            } else {
-                mineSource(creep);
+            if (creep.memory.miningType.equals("energy")) {
+                if (creep.store.energy > creep.store.getCapacity(RESOURCE_ENERGY) / 2) {
+                    if (!buildFixCloseBy(creep))
+                        if (!depositEnergy(creep))
+                            runLink(creep);
+                } else {
+                    mineSource(creep);
+                }
+            } else if (creep.memory.miningType.equals(("mineral"))) {
+                // TODO: Mine minerals.
             }
         }
     }
@@ -211,6 +216,8 @@ public class Miner {
         Array<SourceInfo> sources = creep.room.memory.sources;
 
         boolean assigned = false;
+
+        // Assign energy source.
         for (SourceInfo source : sources) {
             if (source.miner == null || source.miner.isEmpty()) {
                 log(creep, "taking source");
@@ -223,8 +230,34 @@ public class Miner {
             }
 
             if (assigned) {
+                log(creep, "writing energy source to memory");
+                creep.memory.miningType = "energy";
                 creep.memory.destinationId = source.id;
                 break;
+            }
+        }
+
+        // Assign extractor.
+        if (!assigned) {
+            Array<ExtractorInfo> extractors = creep.room.memory.extractors;
+
+            for (ExtractorInfo ei : extractors) {
+                if (ei.miner == null) {
+                    log(creep, "taking mineral");
+                    ei.miner = creep.name;
+                    assigned = true;
+                } else if (Game.creeps.$get(ei.miner) == null) {
+                    log(creep, "replacing " + ei.miner);
+                    ei.miner = creep.name;
+                    assigned = true;
+                }
+
+                if (assigned) {
+                    log(creep, "writing mineral to memory");
+                    creep.memory.miningType = "mineral";
+                    creep.memory.destinationId = ei.mineralId;
+                    break;
+                }
             }
         }
 

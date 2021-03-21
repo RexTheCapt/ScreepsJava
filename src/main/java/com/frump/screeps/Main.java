@@ -38,8 +38,8 @@ import static jsweet.util.Globals.$export;
 public class Main {
     private static Main instance;
     public static final String role_miner = "miner";
-    public static final double role_miner_max = 2;
     public static final boolean role_miner_enabled = true;
+    public static final boolean role_mineral_miner_enabled = false;
 
     public static final String role_runner = "runner";
     public static final double role_runner_max = 3;
@@ -71,7 +71,7 @@ public class Main {
     private static final Array<Double> rollingAverage = new Array<>();
 
     // TODO: Get this number to automatically increment
-    private static final int version_number = 14;
+    private static final int version_number = 15;
 
     public void init(){
         if(Memory.constructionSites == null){
@@ -108,7 +108,7 @@ public class Main {
             Memory.rooms = new Memory.Rooms();
         }
 
-        // Map rooms.
+        // Per room stuff:
         Mapper<Room> rooms = new Mapper<>(Game.rooms);
         for (String roomName : rooms.getKeys()) {
             // Initialize room
@@ -120,24 +120,12 @@ public class Main {
             Room room = Game.rooms.$get(roomName);
             if (room.controller != null) {
                 if (room.controller.my && room.controller.level > 0) {
-                    //this room is claimed, setup memory
-                    if (rm.storingCreep != null) {
-                        StructureLink link = Game.getObjectById(rm.storageLink);
-
-                        if (link != null && link.store.energy == 0) {
-                            rm.storingCreep = null;
-                        }
-                    }
-
-                    StructureRampart[] ramparts = room.find(FIND_STRUCTURES,
-                            Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_RAMPART)));
-
-                    for (StructureRampart r : ramparts)
-                        r.setPublic(TowerControl.getHostiles(room).length == 0);
-
+                    setupRoomMemory(rm);
+                    setRampartAccess(room);
                     RoomScanner.run(room, rm);
                     TowerControl.run(room);
                     spawnCreeps(room);
+                    Functions.sellExcessEnergy(room);
                 }
             }
         }
@@ -220,6 +208,24 @@ public class Main {
         // After CPU count
         visual.text("CPU: " + avgAll + " / " + avgLast50 + " / " + avgLast10, 0, 1, ts);
         rollingAverage.push(timeFinish);
+    }
+
+    private void setRampartAccess(Room room) {
+        StructureRampart[] ramparts = room.find(FIND_STRUCTURES,
+                Helper.findFilter((Structure s) -> s.structureType.equals(STRUCTURE_RAMPART)));
+
+        for (StructureRampart r : ramparts)
+            r.setPublic(TowerControl.getHostiles(room).length == 0);
+    }
+
+    private void setupRoomMemory(RoomMemory rm) {
+        if (rm.storingCreep != null) {
+            StructureLink link = Game.getObjectById(rm.storageLink);
+
+            if (link != null && link.store.energy == 0) {
+                rm.storingCreep = null;
+            }
+        }
     }
 
     @SuppressWarnings("SameParameterValue")

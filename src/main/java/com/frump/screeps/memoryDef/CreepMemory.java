@@ -54,4 +54,5 @@ public class CreepMemory extends Object {
     public Boolean upgradingController;
     public Array<String> log;
     public boolean renew;
+    public String miningType;
 }

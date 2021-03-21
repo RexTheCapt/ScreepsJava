@@ -22,12 +22,12 @@ public class TowerControl {
                 tower.attack(hostiles[0]);
             }
         } else {
-            for (StructureTower tower : towers) {
-                if (tower.store.energy >= 800) {
-                    log(tower, "no enemy found, repairing");
-                    repairStructure(tower);
-                }
-            }
+//            for (StructureTower tower : towers) {
+//                if (tower.store.energy >= 800) {
+//                    log(tower, "no enemy found, repairing");
+//                    repairStructure(tower);
+//                }
+//            }
         }
     }
 

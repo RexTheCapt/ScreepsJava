@@ -12,6 +12,7 @@ public abstract class StoreDefinition extends jsweet.lang.Object {
     native public double getCapacity(String resource);
 
     native public double getFreeCapacity(String resource);
+    native public double getFreeCapacity();
 
     native public double getUsedCapacity(String resource);
 
